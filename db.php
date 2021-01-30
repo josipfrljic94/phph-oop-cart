@@ -48,7 +48,23 @@ public function addToCart($gname,$gprice,$gimg,$quantity,$total,$gcode){
             return false;
         }
 }
-// FUNCTION CHECK USER EXIST
+
+//DELETE TO CART FUNCTION 
+public function deleteToCart($gcode){
+   
+  $sql="DELETE FROM cart WHERE g_code=:gcode";
+  $sth=$this->conn->prepare($sql);
+  $sth->bindValue(":gcode",$gcode);
+  $result=$sth->execute();
+ 
+  if($result){
+      return true;
+  }else{
+      return false;
+  }
+}
+
+// FUNCTION CHECK PRODUCT EXIST
 public function CheckProductExist($gcode){
     $sql="SELECT id FROM cart WHERE g_code=:g_code";
     $sth=$this->conn->prepare($sql);
@@ -64,6 +80,22 @@ public function CheckProductExist($gcode){
     }
   }
 
+  // FUNCTION CHECK PRODUCT EXIST
+public function CheckProductNum($gcode){
+  $sql="SELECT quantity FROM cart WHERE g_code=:g_code";
+  $sth=$this->conn->prepare($sql);
+  $sth->bindValue(":g_code",$gcode);
+  $sth->execute();
+  $Result=$sth->fetch();
+  // FETCH ARRAY
+  if(($Result['quantity'])==1){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
  
   public function IncreasValue($gcode){
     $sql= "UPDATE cart SET quantity=quantity+1 WHERE g_code=:g_code";
@@ -77,6 +109,20 @@ public function CheckProductExist($gcode){
       return false;
     }
   }
+
+  public function  decreaseValue($gcode){
+    $sql= "UPDATE cart SET quantity=quantity-1 WHERE g_code=:g_code";
+    $sth=$this->conn->prepare($sql);
+    $sth->bindValue(":g_code",$gcode);
+    $Result=$sth->execute();
+    if($Result>=1){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   
 
 

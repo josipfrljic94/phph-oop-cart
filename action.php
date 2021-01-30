@@ -47,25 +47,7 @@ echo $output;
 }
 
 
-// if(isset($_POST['addcart'])){
-//     $id= $util->testInput($_POST['id']);
-//     echo 'tuje id'. $id;
-//     $gname=$util->testInput($_POST['g_name']);
-//     $gprice= $util->testInput($_POST['g_price']);
-//     $gimg= $util->testInput($_POST['g_image']);
-//     $quantity= $util->testInput($_POST['quantity']);
-//     $total= $util->testInput($_POST['total_price']);
-//     $gcode= $util->testInput($_POST['g_code']);
 
-//     if ($db->insertincart($gname,$gprice,$gimg,$quantity,$total,$gcode)) {
-//         echo $util->showMessage('success', 'User inserted successfully!');
-//       } else {
-//         echo $util->showMessage('danger', 'Something went wrong!');
-//       }
-// }
-
-
-// get single guitar
 
 function getProduct($id){
   $db=new Database;
@@ -112,6 +94,23 @@ if (isset($_POST['gcode']) ) {
  
 }
 
+if (isset($_POST['decrease']) ) {
+  
+ 
+  $gcode= $util->testInput($_POST['dcode']);
+ 
+  if($db->CheckProductNum($gcode)){
+    $db->deleteToCart($gcode);
+  }else{
+    if($db->decreaseValue($gcode)){
+      echo $util->showMessage('success', 'User decrease value!');
+    }else{
+      echo $util->showMessage('danger', 'Something went wrong!');
+    }
+  }
+  
+}
+
 if (isset($_POST['g_name']) ) {
   
   $gname = $util->testInput($_POST['g_name']);
@@ -147,15 +146,18 @@ if (isset($_GET['cart'])) {
     foreach ($users as $result) {
       $output .= '
       <div class="card col-lg-3 col-md-5 col-sm-8 m-1 p-3 border-0 shadow-sm" >
-      <img src="img/'.$result['g_image'].'" class="h-75 w-75" alt='.$result['g_image'].'></img>
+      <img src="img/'.$result['g_image'].'" class="h-75 w-100" alt='.$result['g_image'].'></img>
       <div class="card-body">
+
+      
       <input type="hidden" value='.$result['quantity'].' class="g-code"/>
       <input type="hidden" value='.$result['g_code'].' class="g-code"/>
-        <h5 class="card-title">'.$result['g_name'].'</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk.</p>
-        <button href="#" class="btn btn-secondary addBtn">+</button>
-        <h6 class="card-title">'.$result['quantity'].'</h6>
-        <button href="#" class="btn btn-danger deleteBtn">-</button>
+     
+        
+          <button href="#"  class="  btn btn-secondary  addBtn">+</button>
+          <h6 class="  card-title">'.$result['quantity'].'</h6>
+         
+          <button href="#"  class=" btn btn-danger deleteBtn">-</button> 
       </div>
     </div>';
     }
